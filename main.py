@@ -4,7 +4,6 @@ from starlette.requests import Request
 
 from app.api.api_v1.api import api_router
 from app.core import config
-from app.db.session import Session
 
 import uvicorn
 app = FastAPI(title=config.PROJECT_NAME,
@@ -32,11 +31,9 @@ app.include_router(api_router, prefix=config.API_V1_STR)
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
-    request.state.db = Session()
     response = await call_next(request)
-    request.state.db.close()
     return response
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
